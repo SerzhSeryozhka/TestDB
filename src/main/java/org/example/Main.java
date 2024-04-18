@@ -8,8 +8,9 @@ import java.util.function.Consumer;
 public class Main {
     public static void main(String[] args) throws SQLException {
         // example0();
-        example1();
+//        example1();
 //        example2();
+        exampleMe();
     }
 
     private static void example2() throws SQLException {
@@ -36,6 +37,35 @@ public class Main {
         return users;
     }
 
+    private static void exampleMe() throws SQLException {
+        Connection conn = connectToDB();
+        ArrayList<Tr> triangles = loadTriangle(conn);
+        System.out.println("получен список из " + triangles.size() + " треугольников");
+        triangles.forEach(System.out::println);
+
+        conn.close();
+    }
+
+    public static ArrayList<Tr> loadTriangle(Connection conn) throws SQLException {
+        ArrayList<Tr> triangles = new ArrayList<>();
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * FROM public.\"Triangle\"");
+        double a, b, c;
+        while (rs.next()) {
+            int x = rs.getInt("id");
+            a = rs.getDouble("a");
+            b = rs.getDouble("b");
+            c = rs.getDouble("c");
+            double sum = a + b + c;
+            System.out.println("получена строка: " + c + " " + a + " " + b);
+            System.out.println(sum);
+            triangles.add(new Tr(a,b,c));
+        }
+        rs.close();
+        st.close();
+        return triangles;
+    }
+
     private static void example1() throws SQLException {
         ArrayList<Tr> triangles = new ArrayList<>();
         Connection conn = connectToDB();
@@ -50,12 +80,13 @@ public class Main {
             double sum = a + b + c;
             System.out.println("получена строка: " + c + " " + a + " " + b);
             System.out.println(sum);
-            triangles.add(new Tr);
+            triangles.add(new Tr(a,b,c));
         }
 
         rs.close();
         st.close();
         conn.close();
+
 
     }
 
